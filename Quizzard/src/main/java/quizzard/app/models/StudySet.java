@@ -1,12 +1,13 @@
 package quizzard.app.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
 
 /**
  * Model class that represents a complete set of flash cards
@@ -14,21 +15,20 @@ import org.hibernate.validator.constraints.Length;
  * @author Tyler Strickland
  *
  */
-public class StudySet {
+@Entity
+public class StudySet extends DomainObject {
 
     /**
      * The set of flash cards associated with this study set
      */
-    @OneToMany ( mappedBy = "studyset" )
-    private ArrayList<Flashcard> flashcards;
+    @OneToMany ( cascade = CascadeType.ALL )
+    private List<Flashcard> flashcards;
 
     /**
      * The name of this study set
      */
     @Id
-    @NotNull
-    @Length ( min = 1 )
-    private String               name;
+    private String          name;
 
     /**
      * Empty constructor for Hibernate
@@ -72,7 +72,7 @@ public class StudySet {
      * @param flashcards
      *            the flashcards associated with the study set
      */
-    public void setFlashcards ( ArrayList<Flashcard> flashcards ) {
+    public void setFlashcards ( List<Flashcard> flashcards ) {
         this.flashcards = flashcards;
     }
 
@@ -90,8 +90,18 @@ public class StudySet {
      *
      * @return flash cards associated with the study set
      */
-    public ArrayList<Flashcard> getFlashcards () {
+    public List<Flashcard> getFlashcards () {
         return flashcards;
+    }
+
+    /**
+     * Returns the id of the StudySet, which here is the name
+     *
+     * @return id of the StudySet, which here is the name
+     */
+    @Override
+    public Serializable getId () {
+        return name;
     }
 
 }

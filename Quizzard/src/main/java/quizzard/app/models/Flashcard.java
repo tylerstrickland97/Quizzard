@@ -1,10 +1,9 @@
 package quizzard.app.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
 
 /**
  * Model class that represents a single flash card in a study set
@@ -13,21 +12,17 @@ import org.hibernate.validator.constraints.Length;
  *
  */
 @Entity
-public class Flashcard {
+public class Flashcard extends DomainObject {
 
     /**
      * The term or main word associated with this flash card
      */
     @Id
-    @NotNull
-    @Length ( min = 1 )
     private String term;
 
     /**
      * The definition of the term associated with this flash card
      */
-    @NotNull
-    @Length ( min = 1 )
     private String definition;
 
     /**
@@ -86,5 +81,15 @@ public class Flashcard {
      */
     public void setDefinition ( String definition ) {
         this.definition = definition;
+    }
+
+    /**
+     * Returns the id of the Flashcard, which here is the term
+     *
+     * @return id of the flashcard, which is the term
+     */
+    @Override
+    public Serializable getId () {
+        return term;
     }
 }
