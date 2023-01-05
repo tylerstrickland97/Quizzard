@@ -32,9 +32,15 @@ import quizzard.app.services.StudySetService;
 @SpringBootTest ( classes = TestConfig.class )
 public class TestStudySetDatabaseInteraction {
 
+    /**
+     * Service that will allow us to save, retrieve, and delete study sets
+     */
     @Autowired
     private StudySetService studySetService;
 
+    /**
+     * Tests that saving a study set to the database works as expected
+     */
     @Transactional
     @Test
     public void testSaveStudySet () {
@@ -76,6 +82,9 @@ public class TestStudySetDatabaseInteraction {
         assertEquals( 2, foundList.get( 1 ).getFlashcards().size() );
     }
 
+    /**
+     * Tests that saving and deleting study sets works as expected
+     */
     @Transactional
     @Test
     public void testSaveAndDeleteStudySet () {
@@ -109,6 +118,9 @@ public class TestStudySetDatabaseInteraction {
         assertNull( studySetService.findByName( "My Study Set" ) );
     }
 
+    /**
+     * Tests that deleting all study sets from the database works as expected
+     */
     @Test
     @Transactional
     public void testDeleteAllStudySet () {

@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.springframework.lang.NonNull;
+
 /**
  * Model class that represents a single flash card in a study set
  *
@@ -18,11 +20,13 @@ public class Flashcard extends DomainObject {
      * The term or main word associated with this flash card
      */
     @Id
+    @NonNull
     private String term;
 
     /**
      * The definition of the term associated with this flash card
      */
+    @NonNull
     private String definition;
 
     /**
