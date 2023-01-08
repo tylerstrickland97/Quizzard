@@ -65,7 +65,12 @@ public class Flashcard extends DomainObject {
      *            the term for this flash card to set
      */
     public void setTerm ( String term ) {
-        this.term = term;
+        if ( term == null ) {
+            throw new IllegalArgumentException( "Term cannot be null" );
+        }
+        else {
+            this.term = term;
+        }
     }
 
     /**
@@ -84,7 +89,13 @@ public class Flashcard extends DomainObject {
      *            the definition for this flash card to set
      */
     public void setDefinition ( String definition ) {
-        this.definition = definition;
+        if ( definition == null ) {
+            throw new IllegalArgumentException( "Definition cannot be null" );
+        }
+        else {
+            this.definition = definition;
+        }
+
     }
 
     /**

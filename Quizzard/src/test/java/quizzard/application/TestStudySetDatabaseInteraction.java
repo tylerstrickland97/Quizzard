@@ -18,11 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import quizzard.app.models.Flashcard;
 import quizzard.app.models.StudySet;
+import quizzard.app.models.User;
 import quizzard.app.services.StudySetService;
+import quizzard.app.services.UserService;
 
 /**
- * Test class that makes sure that StudySet objects are correctly saved and
- * retrieved from the database
+ * Test class that makes sure that StudySet and User objects are correctly saved
+ * and retrieved from the database
  *
  * @author Tyler Strickland
  *
@@ -37,6 +39,9 @@ public class TestStudySetDatabaseInteraction {
      */
     @Autowired
     private StudySetService studySetService;
+
+    @Autowired
+    private UserService     userService;
 
     /**
      * Tests that saving a study set to the database works as expected
@@ -144,6 +149,142 @@ public class TestStudySetDatabaseInteraction {
         assertEquals( 0, studySetService.count() );
         List<StudySet> found = studySetService.findAll();
         assertEquals( 0, found.size() );
+    }
+
+    /**
+     * Tests that saving users with and without studysets works as expected
+     */
+    @Test
+    @Transactional
+    public void testSaveUsers () {
+        User user = new User( "quizzard_lover1", "password", "Tyler", "Strickland", "tylerstrickland@mail.com", null );
+        userService.save( user );
+
+        assertEquals( 1, userService.count() );
+        assertEquals( 1, userService.findAll().size() );
+
+        User foundUser = userService.findById( "quizzard_lover1" );
+        assertNotNull( foundUser );
+        assertEquals( "password", foundUser.getPassword() );
+        assertEquals( "Tyler", foundUser.getFirstName() );
+        assertEquals( 0, foundUser.getStudySets().size() );
+
+        Flashcard f1 = new Flashcard( "Biology", "The study of life" );
+        Flashcard f2 = new Flashcard( "Computer", "One who computes" );
+        ArrayList<Flashcard> cards = new ArrayList<Flashcard>();
+        cards.add( f1 );
+        cards.add( f2 );
+
+        StudySet s = new StudySet( "Study Set For Me", cards );
+        ArrayList<StudySet> sets = new ArrayList<StudySet>();
+        sets.add( s );
+        User user2 = new User( "big_study_boy", "quizzarduser2", "John", "Johnson", "john.johnson@mail.com", sets );
+        userService.save( user2 );
+        assertEquals( 2, userService.count() );
+        assertEquals( 2, userService.findAll().size() );
+
+        User foundUser2 = userService.findByUsername( "big_study_boy" );
+        assertNotNull( foundUser2 );
+        assertEquals( "John", foundUser2.getFirstName() );
+        assertEquals( 1, foundUser2.getStudySets().size() );
+        List<StudySet> foundSets = userService.findStudySetsByUsername( "big_study_boy" );
+        assertEquals( 1, foundSets.size() );
+        assertEquals( "Biology", foundSets.get( 0 ).getFlashcards().get( 0 ).getTerm() );
+        assertEquals( "Computer", foundSets.get( 0 ).getFlashcards().get( 1 ).getTerm() );
+    }
+
+    /**
+     * Tests that saving multiple Users with StudySets and then deleting them
+     * one by one deletes the correct study sets and users
+     */
+    @Transactional
+    @Test
+    public void testSaveAndDeleteStudySets () {
+        Flashcard f1 = new Flashcard( "Biology", "The study of life" );
+        Flashcard f2 = new Flashcard( "Computer", "One who computes" );
+        ArrayList<Flashcard> cards = new ArrayList<Flashcard>();
+        cards.add( f1 );
+        cards.add( f2 );
+
+        StudySet s = new StudySet( "Study Set For Me", cards );
+        ArrayList<StudySet> sets = new ArrayList<StudySet>();
+        sets.add( s );
+        studySetService.save( s );
+
+        User user = new User( "tyler_strickland14", "password", "Tyler", "Strickland", "tylerstrickland@mail.com",
+                sets );
+        userService.save( user );
+        assertEquals( 1, userService.count() );
+        assertEquals( 1, studySetService.count() );
+
+        userService.delete( user );
+        assertEquals( 0, studySetService.count() );
+        assertEquals( 0, userService.count() );
+
+        userService.save( user );
+        Flashcard f3 = new Flashcard( "Respite", "A pause from doing something" );
+        Flashcard f4 = new Flashcard( "Pensive", "Deeply or seriously thoughtful" );
+        ArrayList<Flashcard> cards2 = new ArrayList<Flashcard>();
+        cards2.add( f3 );
+        cards2.add( f4 );
+        StudySet newSet = new StudySet( "My Study Set", cards2 );
+        ArrayList<StudySet> otherSets = new ArrayList<StudySet>();
+        otherSets.add( newSet );
+
+        User newUser = new User( "quizzard_boy", "passWord", "Sammy", "Smart", "smartsam@mail.com", otherSets );
+        userService.save( newUser );
+        assertEquals( 2, userService.count() );
+        assertEquals( 2, studySetService.count() );
+
+        userService.delete( newUser );
+        assertEquals( 1, userService.count() );
+        assertEquals( 1, studySetService.count() );
+        assertNotNull( studySetService.findByName( "Study Set For Me" ) );
+        assertNull( studySetService.findByName( "My Study Set" ) );
+        assertNotNull( userService.findByUsername( "tyler_strickland14" ) );
+        assertNull( userService.findByUsername( "quizzard_boy" ) );
+    }
+
+    /**
+     * Tests that deleting all users at once deletes all study sets and users
+     * from the database
+     */
+    @Transactional
+    @Test
+    public void testDeleteAllUsers () {
+        Flashcard f1 = new Flashcard( "Biology", "The study of life" );
+        Flashcard f2 = new Flashcard( "Computer", "One who computes" );
+        ArrayList<Flashcard> cards = new ArrayList<Flashcard>();
+        cards.add( f1 );
+        cards.add( f2 );
+
+        StudySet s = new StudySet( "Study Set For Me", cards );
+        ArrayList<StudySet> sets = new ArrayList<StudySet>();
+        sets.add( s );
+        studySetService.save( s );
+
+        User user = new User( "tyler_strickland14", "password", "Tyler", "Strickland", "tylerstrickland@mail.com",
+                sets );
+        userService.save( user );
+
+        Flashcard f3 = new Flashcard( "Respite", "A pause from doing something" );
+        Flashcard f4 = new Flashcard( "Pensive", "Deeply or seriously thoughtful" );
+        ArrayList<Flashcard> cards2 = new ArrayList<Flashcard>();
+        cards2.add( f3 );
+        cards2.add( f4 );
+        StudySet newSet = new StudySet( "My Study Set", cards2 );
+        ArrayList<StudySet> otherSets = new ArrayList<StudySet>();
+        otherSets.add( newSet );
+
+        User newUser = new User( "quizzard_boy", "passWord", "Sammy", "Smart", "smartsam@mail.com", otherSets );
+        userService.save( newUser );
+        assertEquals( 2, userService.count() );
+        assertEquals( 2, studySetService.count() );
+
+        userService.deleteAll();
+        assertEquals( 0, userService.count() );
+        assertEquals( 0, studySetService.count() );
+
     }
 
 }

@@ -1,6 +1,7 @@
 package quizzard.app.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -74,12 +75,19 @@ public class User extends DomainObject {
      * @param password
      *            the password of the new User
      */
-    public User ( String username, String password, String firstName, String lastName, String email ) {
+    public User ( String username, String password, String firstName, String lastName, String email,
+            List<StudySet> sets ) {
         setUsername( username );
         setPassword( password );
         setFirstName( firstName );
         setLastName( lastName );
         setEmail( email );
+        if ( sets == null ) {
+            this.studySets = new ArrayList<StudySet>();
+        }
+        else {
+            setSets( sets );
+        }
     }
 
     /**
@@ -132,6 +140,10 @@ public class User extends DomainObject {
         this.email = email;
     }
 
+    private void setSets ( List<StudySet> sets ) {
+        this.studySets = sets;
+    }
+
     /**
      * Returns the User's username
      *
@@ -178,6 +190,15 @@ public class User extends DomainObject {
     }
 
     /**
+     * Returns the User's StudySets
+     *
+     * @return StudySets associated with this User
+     */
+    public List<StudySet> getStudySets () {
+        return studySets;
+    }
+
+    /**
      * Edits the User object
      *
      * @param username
@@ -191,12 +212,14 @@ public class User extends DomainObject {
      * @param email
      *            the new email for the User
      */
-    public void editUser ( String username, String password, String first, String last, String email ) {
+    public void editUser ( String username, String password, String first, String last, String email,
+            List<StudySet> sets ) {
         setUsername( username );
         setPassword( password );
         setFirstName( first );
         setLastName( last );
         setEmail( email );
+        setSets( sets );
     }
 
     /**

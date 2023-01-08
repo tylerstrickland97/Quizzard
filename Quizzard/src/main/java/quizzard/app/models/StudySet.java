@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.springframework.lang.NonNull;
+
 /**
  * Model class that represents a complete set of flash cards
  *
@@ -28,6 +30,7 @@ public class StudySet extends DomainObject {
      * The name of this study set
      */
     @Id
+    @NonNull
     private String          name;
 
     /**
@@ -63,6 +66,9 @@ public class StudySet extends DomainObject {
      *            the name of the study set
      */
     public void setName ( String name ) {
+        if ( name == null ) {
+            throw new IllegalArgumentException( "Name cannot be null" );
+        }
         this.name = name;
     }
 
