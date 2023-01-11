@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,12 @@ public class TestStudySetDatabaseInteraction {
 
     @Autowired
     private UserService     userService;
+
+    @Before
+    public void setup () {
+        studySetService.deleteAll();
+        userService.deleteAll();
+    }
 
     /**
      * Tests that saving a study set to the database works as expected

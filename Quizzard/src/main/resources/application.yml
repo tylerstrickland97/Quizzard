@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/CoffeeMaker?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&serverTimezone=EST
+    url: jdbc:mysql://localhost:3306/Quizzard?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&serverTimezone=EST
     username: root
     password: NC$tate20192023
     hikari:

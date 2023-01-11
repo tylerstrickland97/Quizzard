@@ -46,16 +46,16 @@ public class StudySet extends DomainObject {
      *
      * @param name
      *            the name of the new study set
-     * @param flashcards
+     * @param list
      *            the set of flash cards associated with the new study set
      */
-    public StudySet ( String name, ArrayList<Flashcard> flashcards ) {
+    public StudySet ( String name, List<Flashcard> list ) {
         setName( name );
-        if ( flashcards != null ) {
-            setFlashcards( flashcards );
+        if ( list != null ) {
+            setFlashcards( list );
         }
         else {
-            flashcards = new ArrayList<Flashcard>();
+            list = new ArrayList<Flashcard>();
         }
     }
 
@@ -66,9 +66,6 @@ public class StudySet extends DomainObject {
      *            the name of the study set
      */
     public void setName ( String name ) {
-        if ( name == null ) {
-            throw new IllegalArgumentException( "Name cannot be null" );
-        }
         this.name = name;
     }
 

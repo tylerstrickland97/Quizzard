@@ -9,8 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.springframework.lang.NonNull;
+import javax.validation.constraints.NotNull;
 
 /**
  * Class that represents a single person using the application. One user will
@@ -26,37 +25,37 @@ public class User extends DomainObject {
      * Represents the username a User will hold in the Quizzard system
      */
     @Id
-    @NonNull
+    @NotNull
     private String         username;
 
     /**
      * The password that a User will use to login to Quizzard
      */
-    @NonNull
+    @NotNull
     private String         password;
 
     /**
      * First name of the User
      */
-    @NonNull
+    @NotNull
     private String         firstName;
 
     /**
      * Last name of the User
      */
-    @NonNull
+    @NotNull
     private String         lastName;
 
     /**
      * Email of the User
      */
-    @NonNull
+    @NotNull
     private String         email;
 
     /**
      * The list of study sets that a User has
      */
-    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @OneToMany ( cascade = { CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER )
     private List<StudySet> studySets;
 
     /**
@@ -212,14 +211,12 @@ public class User extends DomainObject {
      * @param email
      *            the new email for the User
      */
-    public void editUser ( String username, String password, String first, String last, String email,
-            List<StudySet> sets ) {
+    public void editUser ( String username, String password, String first, String last, String email ) {
         setUsername( username );
         setPassword( password );
         setFirstName( first );
         setLastName( last );
         setEmail( email );
-        setSets( sets );
     }
 
     /**

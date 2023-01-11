@@ -81,7 +81,7 @@ public class UserTest {
         assertEquals( 1, user.getStudySets().size() );
 
         sets.add( s2 );
-        user.editUser( "quizzard_lover1", "newPassword", "tyler", "strickland", "tylerstrickland@newmail.com", sets );
+        user.editUser( "quizzard_lover1", "newPassword", "tyler", "strickland", "tylerstrickland@newmail.com" );
         assertEquals( "quizzard_lover1", user.getUsername() );
         assertEquals( "newPassword", user.getPassword() );
         assertEquals( "tyler", user.getFirstName() );
