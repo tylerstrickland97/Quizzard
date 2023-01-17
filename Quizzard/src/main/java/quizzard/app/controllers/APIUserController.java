@@ -31,6 +31,62 @@ public class APIUserController extends APIController {
     @Autowired
     private UserService userService;
 
+    private User        currentUser;
+
+    /**
+     * Allows a user to "login" to Quizzard, making sure they are a valid user
+     * in the system and also keeping up with who the current user is
+     *
+     * @param username
+     *            the username the user tries to login with
+     * @param password
+     *            the password the user tries to login with
+     * @return ResponseEntity indicating whether the login was successful or not
+     */
+    @PostMapping ( BASE_PATH + "/login" )
+    public ResponseEntity login ( @RequestBody User user ) {
+        User foundUser = userService.findByUsername( user.getUsername() );
+        if ( foundUser == null ) {
+            return new ResponseEntity( "Invalid username or password", HttpStatus.BAD_REQUEST );
+        }
+        else if ( !foundUser.getPassword().equals( user.getPassword() ) ) {
+            return new ResponseEntity( "Invalid username or password", HttpStatus.BAD_REQUEST );
+        }
+
+        currentUser = user;
+        return new ResponseEntity( "Success", HttpStatus.OK );
+
+    }
+
+    /**
+     * Logs the current user out and updates the current user
+     *
+     * @param username
+     *            the username of the User logging out
+     * @return ResponseEntity indicating whether the logout was successful or
+     *         not
+     */
+    @PostMapping ( BASE_PATH + "/logout" )
+    public ResponseEntity logout ( @RequestBody User user ) {
+        User foundUser = userService.findByUsername( user.getUsername() );
+
+        if ( foundUser == null || !currentUser.getUsername().equals( user.getUsername() ) ) {
+            return new ResponseEntity( "Couldn't log out", HttpStatus.BAD_REQUEST );
+        }
+        currentUser = null;
+        return new ResponseEntity( "Success", HttpStatus.OK );
+    }
+
+    /**
+     * Returns the user currently logged into Quizzard
+     *
+     * @return the user currently logged into Quizzard
+     */
+    @GetMapping ( BASE_PATH + "/current_user" )
+    public ResponseEntity getCurrentUser () {
+        return new ResponseEntity( currentUser, HttpStatus.OK );
+    }
+
     /**
      * Returns all users that are in the Quizzard system
      *

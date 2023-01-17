@@ -397,6 +397,66 @@ public class APIUserControllerTest {
     }
 
     /**
+     * Tests that logging in and out as well as retrieving the current user
+     * works as expected
+     *
+     * @throws Exception
+     */
+    @Transactional
+    @Test
+    public void testLoginAndLogout () throws Exception {
+        // Create two users, but only save user1 to the system
+        User user1 = new User( "tyler_strickland14", "password", "Tyler", "Strickland", "tylerstrickland@mail.com",
+                null );
+        User user2 = new User( "quizzard_lover1", "mypassword", "John", "Johnson", "john.johnson@mail.com", null );
+        userService.save( user1 );
+
+        // Try to login as both users. User1 should be able to, but user2 should
+        // not be able to.
+        mvc.perform(
+                post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user1 ) ) )
+                .andExpect( status().isOk() );
+        mvc.perform(
+                post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user2 ) ) )
+                .andExpect( status().isBadRequest() );
+
+        // Make sure we can retrieve the current user
+        mvc.perform( get( "/api/v1/current_user" ).contentType( MediaType.APPLICATION_JSON ) )
+                .andExpect( status().isOk() );
+
+        // Make sure we can logout as user1
+        mvc.perform(
+                post( "/api/v1/logout" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user1 ) ) )
+                .andExpect( status().isOk() );
+
+        // Make sure that once we logout we can log back in if we wanted to
+        mvc.perform(
+                post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user1 ) ) )
+                .andExpect( status().isOk() );
+        // Make sure we still can't sign in as user2 since they are not saved to
+        // the system yet
+        mvc.perform(
+                post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user2 ) ) )
+                .andExpect( status().isBadRequest() );
+
+        // Save user2 to the system
+        userService.save( user2 );
+        // Log out as user1
+        mvc.perform(
+                post( "/api/v1/logout" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user1 ) ) )
+                .andExpect( status().isOk() );
+        // Login as user2 which should work now
+        mvc.perform(
+                post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user2 ) ) )
+                .andExpect( status().isOk() );
+        // Log out as user2
+        mvc.perform(
+                post( "/api/v1/logout" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user2 ) ) )
+                .andExpect( status().isOk() );
+
+    }
+
+    /**
      * Uses Google's GSON parser to serialize a Java object to JSON. Useful for
      * creating JSON representations of our objects when calling API methods.
      *
