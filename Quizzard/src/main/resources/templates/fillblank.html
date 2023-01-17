@@ -1,0 +1,219 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:tiles="http://www.thymeleaf.org">
+<head>
+<title tiles:fragment="title">Quizzard :: Fill in the Blank</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+
+body {
+	font-family: Georgia;
+}
+
+nav {
+	background-color: #191919;
+	height: 20%;
+	padding-top: 50px;
+	padding-left: 10px;
+}
+
+.dropdown {
+   position: relative;
+   display: inline-block;
+}
+
+.menu {
+   color: white;
+   padding: 25px;
+   font-size: 24px;
+   border: none;
+}
+
+a {
+	text-decoration: none;
+	padding-left: 16px;
+	padding-right: 16px;
+	color: white;
+	font-size: 24px;
+}
+
+a:hover {
+	background-color: #333333;
+	text-decoration: none;
+	color: white;
+}
+
+.menu-list {
+   display: none;
+   position: absolute;
+   background-color: #333333;
+   min-width: 350px;
+   z-index: 1;
+   font-size: 14px;
+}
+
+.menu-links{
+   display: block;
+   font-size: 14px;
+}
+
+.dropdown:hover .menu-list {
+   display: block;
+}
+
+
+input {
+	width: 200px;
+	height: 30px;
+	font-size: 18px;
+	margin-top: 10px;
+	overflow: visible;
+}
+
+button {
+	background-color: #80dfff;
+	border-radius: 10px;
+	width: 40%;
+	height: 50px;
+	color: black;
+	font-size: 18px;
+	margin-right: 30px;
+	margin-left: 30px;
+}
+
+
+
+.text {
+	padding: 10px;
+	font-size: 30px;
+	text-align: center;
+}
+
+
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40%;
+	margin-top: 30px;
+}
+
+
+td {
+	padding: 40px;
+	margin-right: 30px;
+}
+
+th {
+	padding: 20px;
+	background-color: #80dfff;
+	font-size: 24px;
+	text-align: center;
+}
+
+
+</style>
+
+
+<!-- AngularJS library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body>
+		<script th:inline="javascript">
+			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+			/*<![CDATA[*/
+			var app = angular.module("createAccountApp", []);
+
+			app.controller('createAccountApp', function($scope, $http) {
+
+				
+				
+				
+			});
+			/*]]>*/
+		</script>
+
+		<nav> 
+			<a href = "home.html">Home</a>
+			<a href = "about.html">About</a>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Account
+					<div class = "menu-list">
+						<a class="menu-links" href="manageaccount.html">Manage Account</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Study Sets
+					<div class = "menu-list">
+						<a class="menu-links" href="createstudyset.html">Create Study Set</a>
+						<a class="menu-links" href="managestudyset.html">Manage Study Sets</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+			
+				<div class = "menu">
+					Study Modes
+					<div class = "menu-list">
+						<a class="menu-links" href="study.html">Study</a>
+						<a class="menu-links" href="fillblank.html">Fill in the Blank</a>
+						<a class="menu-links" href="multiplechoice.html">Multiple Choice</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown logout" style = "text-align: right">
+				<a href = "login.html" class = "menu">Logout</a>
+			</div>
+		</nav>
+		
+		<p class = "text"> Fill in the Blank </p>
+		<br>
+		<p style = "padding: 10px; font-size: 24px; display: inline-block;"> Select a Study Set: </p>
+		<select style = "width: 20%; border-radius: 6px; height: 30px;"> 
+			<option> Spanish </option>
+			<option> Biology </option>
+		</select>
+		<div class = "container"> 
+			<table style = "text-align: center;">
+				<tr> 
+					<th> Definition </th>
+					<th> Term </th>
+				</tr>
+				<tr> 
+					<td>The study of life</td>
+					<td> <input type = "text" placeholder = "Your answer..."></td>
+				</tr>
+				<tr> 
+					<td> The study of the human body </td>
+					<td> <input type = "text" placeholder = "Your answer..."></td>
+				</tr>
+			
+			</table>
+		
+			<br>
+		</div>
+		
+		<div class = "container"> 
+			<button type = "submit" style = "background-color: #ffa333;">Reset</button><button type = "submit" style = "background-color: #38e038;">Check Answers</button>
+			<br>
+			<br>
+		</div>
+		<hr>
+		<div class = "container" style = "padding: 30px;">
+			<p class = "text"> Your Score: 9/10</p>
+			<button type = "submit">Try Again</button>
+		</div>
+		
+</body>
+</html>

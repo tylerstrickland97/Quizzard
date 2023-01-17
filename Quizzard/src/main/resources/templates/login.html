@@ -1,0 +1,131 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:tiles="http://www.thymeleaf.org">
+<head>
+<title tiles:fragment="title">Quizzard :: Login</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.topbar {
+	overflow: hidden;
+	background-color: #191919;
+	
+}
+
+.topBarText {
+	color: white;
+	font-size: 40px;
+	text-align: right;
+	padding-right: 30px;
+}
+
+
+.backgroundDiv {
+	background-image: url("loginImage3");
+	background-size: cover;
+	background-repeat: no-repeat;
+    height: 100%;
+    width: 50%;
+    left: 50%;
+    position: absolute;
+}
+
+form {
+  	border-radius: 10px;
+  	padding: 50px;
+  	box-shadow:0 0 15px 4px rgba(0,0,0,0.50);
+  	margin-right: 50px;
+}
+
+input {
+	width: 100%;
+	height: 50px;
+	font-size: 18px;
+	margin-top: 10px;
+}
+
+button {
+	margin-top: 30px;
+	margin-bottom: 30px;
+	background-color: #38e038;
+	border-radius: 10px;
+	width: 100%;
+	height: 50px;
+	color: black;
+	font-size: 18px;
+	background-color: #38e038;
+}
+
+.formContainer {
+	float: left;
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	padding-top: 100px;
+	padding-left: 200px;
+}
+
+.grid-container {
+    display: inline-block;
+    margin-left: 100px;
+    
+}
+
+.formMessages {
+	font-size: 18px;
+	text-align: center;
+	margin-bottom: 10px;
+}
+</style>
+
+<!-- AngularJS library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body>
+		<script th:inline="javascript">
+			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+			/*<![CDATA[*/
+			var app = angular.module("loginApp", []);
+
+			app.controller('loginCtrl', function($scope, $http) {
+
+				
+				$scope.login = function() {
+					window.location.href = ("home.html");
+				}
+				
+			});
+			/*]]>*/
+		</script>
+	<div ng-app = "loginApp" ng-controller = "loginCtrl">
+		<div class = "topbar"> 
+			<p class = "topBarText"> Quizzard </p>
+		</div>
+		
+		<div class = "gridContainer">
+			<div class = "formContainer">
+				<form class = "form" ng-submit = "login()"> 
+					<p class = "formMessages"> Login to Quizzard </p> <br>
+					<fieldset>
+						<input type = "text" id = "usernameField" placeholder = "Username">
+						<br><br><br>
+						<input type = "password" id = "passwordField" placeholder = "Password">
+					</fieldset>
+					<br><br><br>
+					<button type = "submit" class = "loginButton">Login</button>
+					<p class = "formMessages"> Don't have an account? <a href = "createaccount.html">Create account</a> </p>
+				</form>
+				<br><br>
+		
+			</div> 
+			<div class = "backgroundDiv">
+			</div>
+		</div>
+	</div>
+</body>
+</html>

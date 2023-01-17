@@ -1,0 +1,264 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:tiles="http://www.thymeleaf.org">
+<head>
+<title tiles:fragment="title">Quizzard :: Manage Study Sets</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+
+body {
+	font-family: Georgia;
+}
+
+nav {
+	background-color: #191919;
+	height: 20%;
+	padding-top: 50px;
+	padding-left: 10px;
+}
+
+.dropdown {
+   position: relative;
+   display: inline-block;
+}
+
+.menu {
+   color: white;
+   padding: 25px;
+   font-size: 24px;
+   border: none;
+}
+
+a {
+	text-decoration: none;
+	padding-left: 16px;
+	padding-right: 16px;
+	color: white;
+	font-size: 24px;
+}
+
+a:hover {
+	background-color: #333333;
+	text-decoration: none;
+	color: white;
+}
+
+.menu-list {
+   display: none;
+   position: absolute;
+   background-color: #333333;
+   min-width: 350px;
+   z-index: 1;
+   font-size: 14px;
+}
+
+.menu-links{
+   display: block;
+   font-size: 14px;
+}
+
+.dropdown:hover .menu-list {
+   display: block;
+}
+
+.formContainer {
+	display: inline-block;
+  	width: 40%;
+  	margin-left: 75px;
+}
+
+form {
+  	border-radius: 10px;
+  	padding: 25px;
+  	box-shadow:0 0 15px 4px rgba(0,0,0,0.50);
+}
+
+table {
+	box-shadow:0 0 15px 4px rgba(0,0,0,0.50);
+  	width: 66%;
+}
+
+input {
+	width: 500px;
+	height: 30px;
+	font-size: 18px;
+	margin-top: 10px;
+	overflow: visible;
+}
+
+button {
+	background-color: #1975ff;
+	border-radius: 10px;
+	width: 20%;
+	height: 50px;
+	color: black;
+	font-size: 18px;
+}
+
+.formMessages {
+	font-size: 18px;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+
+.text {
+	padding: 10px;
+	font-size: 30px;
+	text-align: center;
+}
+
+.flashcardFields {
+	width: 500px;
+}
+
+.tableContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+th td {
+	background-color: white;
+	text-align: center;
+	border: solid;
+	padding: 10px;
+}
+
+tr {
+	text-align: center;
+	height: 50px;
+	overflow: visible;
+	border: thin;
+} 
+
+.container {
+	display: inline-block;
+	width: 33%;
+	margin-left: 100px;
+	margin-right: 100px;
+	justify-content: center;
+	align-items: center;
+}
+
+hr {
+	padding-top: 100px;
+}
+
+</style>
+
+
+<!-- AngularJS library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body>
+		<script th:inline="javascript">
+			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+			/*<![CDATA[*/
+			var app = angular.module("createAccountApp", []);
+
+			app.controller('createAccountApp', function($scope, $http) {
+
+				
+				
+				
+			});
+			/*]]>*/
+		</script>
+
+		<nav> 
+			<a href = "home.html">Home</a>
+			<a href = "about.html">About</a>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Account
+					<div class = "menu-list">
+						<a class="menu-links" href="manageaccount.html">Manage Account</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Study Sets
+					<div class = "menu-list">
+						<a class="menu-links" href="createstudyset.html">Create Study Set</a>
+						<a class="menu-links" href="managestudyset.html">Manage Study Sets</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+			
+				<div class = "menu">
+					Study Modes
+					<div class = "menu-list">
+						<a class="menu-links" href="study.html">Study</a>
+						<a class="menu-links" href="fillblank.html">Fill in the Blank</a>
+						<a class="menu-links" href="multiplechoice.html">Multiple Choice</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown logout" style = "text-align: right">
+				<a href = "login.html" class = "menu">Logout</a>
+			</div>
+		</nav>
+		
+		<p class = "text">Manage Study Sets</p>
+		<div class = "tableContainer">
+		<table> 
+			<tr> 
+				<th style = "text-align: center"> Study Set</th>
+				<th style = "text-align: center"> Edit></th>
+				<th style = "text-align: center"> Delete</th>
+			</tr>
+			<tr>
+				<td> Study Set 1 </td>
+				<td> <button>Edit</button> </td>
+				<td> <button style = "background-color: #d90000;">Delete</button> </td>
+			</tr>
+		
+		</table>
+		</div>
+		<hr>
+		
+		<div class = "container">
+			<input placeholder = "Study Set Name">
+		</div>
+		<div class = "formContainer">	
+			<form> 
+				<p class = "text">Add a Flashcard</p>
+				<input type = "text" class = "flashcardFields" placeholder = "Term"> <input type = "text" class = "flashcardFields" placeholder = "Definition">
+				<br>
+				<br>
+				<button type = "submit" >Add </button>
+			</form>
+		</div>
+		<hr>
+		<p class = "text"> Current Flashcards</p>
+		<div class = "tableContainer">
+		<table> 
+			<tr> 
+				<th style = "text-align: center"> Term</th>
+				<th style = "text-align: center"> Definition </th>
+			</tr>
+			<tr>
+				<td> Term 1 </td>
+				<td> Definition 2 </td>
+			</tr>
+		
+		</table>
+		</div>
+		<br><br>
+		<button type = "submit" style = "float: right; background-color: #38e038; margin-right: 100px; margin-bottom: 30; width: 15%;">Edit Study Set</button>
+		
+		
+		
+</body>
+</html>

@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:tiles="http://www.thymeleaf.org">
+<head>
+<title tiles:fragment="title">Quizzard Login</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.topbar {
+	overflow: hidden;
+	background-color: #320FF7;
+
+}
+</style>
+
+<!-- AngularJS library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body>
+	<script th:inline="javascript">
+		/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+			/*<![CDATA[*/
+		var app = angular.module("loginApp", []);
+
+		app.controller('loginCtrl', function($scope, $http) {
+
+				
+				
+				
+		});
+		/*]]>*/
+	</script>
+	
+	<div class = "topbar"> 
+		<p> Quizzard </p>
+		
+	</div>
+
+		
+</body>
+</html>

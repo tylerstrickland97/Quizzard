@@ -1,0 +1,195 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:tiles="http://www.thymeleaf.org">
+<head>
+<title tiles:fragment="title">Quizzard :: Home Page</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+
+body {
+	font-family: Georgia;
+}
+
+nav {
+	background-color: #191919;
+	height: 20%;
+	padding-top: 50px;
+	padding-left: 10px;
+}
+
+.dropdown {
+   position: relative;
+   display: inline-block;
+}
+
+.menu {
+   color: white;
+   padding: 25px;
+   font-size: 24px;
+   border: none;
+}
+
+a {
+	text-decoration: none;
+	padding-left: 16px;
+	padding-right: 16px;
+	color: white;
+	font-size: 24px;
+}
+
+a:hover {
+	background-color: #333333;
+	text-decoration: none;
+	color: white;
+}
+
+.menu-list {
+   display: none;
+   position: absolute;
+   background-color: #333333;
+   min-width: 350px;
+   z-index: 1;
+   font-size: 14px;
+}
+
+.menu-links{
+   display: block;
+   font-size: 14px;
+}
+
+.dropdown:hover .menu-list {
+   display: block;
+}
+
+.logout {
+	text-align: right;
+}
+
+.container {
+    display: flex;
+    height: 66%;
+    margin-bottom: 30px;
+    margin-top: 200px;
+}
+
+.child {
+    flex: 1;
+    align-items: center;
+    text-align: center;
+}
+
+.child.left {
+	margin-right: 100px;
+}
+
+.child.left.top {
+	background-image: url("image2");
+	background-size: cover;
+	box-shadow:0 0 15px 4px rgba(0,0,0,0.50);
+}
+
+.child.right.bottom {
+	background-image: url("image3");
+	background-size: cover;
+	box-shadow:0 0 15px 4px rgba(0,0,0,0.50);
+}
+
+.text {
+	padding: 100px;
+	font-size: 30px;
+}
+
+.welcomeText {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.welcomeMessage {
+	font-size: 48px;
+	padding-top: 50px;
+}
+
+
+</style>
+
+
+
+
+<!-- AngularJS library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body>
+		<nav> 
+			<a href = "home.html">Home</a>
+			<a href = "about.html">About</a>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Account
+					<div class = "menu-list">
+						<a class="menu-links" href="manageaccount.html">Manage Account</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+				<div class = "menu">
+					Study Sets
+					<div class = "menu-list">
+						<a class="menu-links" href="createstudyset.html">Create Study Set</a>
+						<a class="menu-links" href="managestudyset.html">Manage Study Sets</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown"> 
+			
+				<div class = "menu">
+					Study Modes
+					<div class = "menu-list">
+						<a class="menu-links" href="study.html">Study</a>
+						<a class="menu-links" href="fillblank.html">Fill in the Blank</a>
+						<a class="menu-links" href="multiplechoice.html">Multiple Choice</a>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class = "dropdown logout" style = "text-align: right">
+				<a href = "login.html" class = "menu">Logout</a>
+			</div>
+		</nav>
+		
+		<div class = "welcomeText">
+			<p class = "welcomeMessage"> Welcome to Quizzard </p>
+		</div>
+		<div class = "container"> 
+			<div class = "child left top">
+			
+			</div>
+			<div class = "child"> 
+			
+				<p class = "text"> By using Quizzard, you have access to an entire world of studying, all in one place. </p>
+				
+			</div>
+		
+		</div>
+		
+		<div class = "container"> 
+			<div class = "child left">
+				<p class = "text"> Inspire your learning to achieve new goals. </p>
+			</div>
+			<div class = "child right bottom"> 
+			
+			
+			</div>
+		
+		</div>
+
+		
+</body>
+</html>
