@@ -104,6 +104,17 @@ button {
   	align-items: center;
   	justify-content: right;
 }
+
+.loginLink {
+	color: blue;
+	text-decoration: underline;
+}
+
+.loginLink:hover {
+	background-color: white;
+	text-decoration: underline;
+	color: blue;
+}
 </style>
 
 
@@ -117,15 +128,26 @@ button {
 			/*<![CDATA[*/
 			var app = angular.module("createAccountApp", []);
 
-			app.controller('createAccountApp', function($scope, $http) {
+			app.controller('createAccountCtrl', function($scope, $http) {
 
+				$scope.newUser = {};
 				
+				$scope.createAccount = function() {
+					$scope.newUser.studySets = [];
+					$http.post("/api/v1/users", $scope.newUser).then(
+				              function (response) {
+				            	   $scope.message = "Successfully created account"; 
+				              }, function (rejection) {
+				            	 	$scope.message = "There was a problem creating your account"   
+				              });
+					
+				}
 				
 				
 			});
 			/*]]>*/
 		</script>
-
+	<div ng-app = "createAccountApp" ng-controller = "createAccountCtrl">
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -171,22 +193,24 @@ button {
 			<form>
 			<p class = "formMessages">Create your Quizzard Account</p>
 				<fieldset> 
-					<input type = "text" placeholder = "Username">
+					<input ng-model = "newUser.username" type = "text" placeholder = "Username">
 					<br><br>
-					<input type = "password" placeholder = "Password">
+					<input ng-model = "newUser.password" type = "password" placeholder = "Password">
 					<br><br>
-					<input type = "text" placeholder = "First Name">
+					<input ng-model = "newUser.firstName" type = "text" placeholder = "First Name">
 					<br><br>
-					<input type = "text" placeholder = "Last Name">
+					<input ng-model = "newUser.lastName" type = "text" placeholder = "Last Name">
 					<br><br>
-					<input type = "text" placeholder = "Email">
+					<input ng-model = "newUser.email" type = "text" placeholder = "Email">
 					<br><br>
-					<button type = "submit">Create Account</button>
+					<p class = "formMessages" style = "font-size: 14px;">{{message}}</p>
+					<button ng-click = "createAccount()" type = "submit">Create Account</button>
 					<br><br>
-					<p class = "formMessages"> Already have an account? <a href = "login.html">Login</a></p>
+					<p class = "formMessages"> Already have an account? <a href = "login.html" class = "loginLink">Login</a></p>
 				</fieldset>
 			</form>
 	
 		</div>
+	</div>
 </body>
 </html>

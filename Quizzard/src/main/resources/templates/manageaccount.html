@@ -124,6 +124,42 @@ button {
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 </head>
 <body>
+
+		<script th:inline="javascript">
+			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+			/*<![CDATA[*/
+			var app = angular.module("manageAccountApp", []);
+
+			app.controller('manageAccountCtrl', function($scope, $http) {
+				$scope.editUser = {};
+				
+				$scope.editAccount = function() {
+					$scope.editUser.studySets = [];
+					$http.put("/api/v1/users/" + $scope.editUser.username, $scope.editUser).then(
+				              function (response) {
+				            	   $scope.message = "Successfully edited account"; 
+				              }, function (rejection) {
+				            	 	$scope.message = "There was a problem editing your account"   
+				              });
+					
+				}
+				
+				$scope.deleteAccount = function() {
+					
+					$http.delete('/api/v1/users/' + $scope.editUser.username).then(
+				              function (response) {
+				                window.location.href = "login.html";
+				                
+				              }, function (rejection) {
+				                $scope.message = "To delete account, enter username in the input field and then click delete.";
+				              });
+				}
+				
+				
+			});
+			/*]]>*/
+		</script>
+	<div ng-app = "manageAccountApp" ng-controller = "manageAccountCtrl">
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -171,26 +207,28 @@ button {
 			<form>
 			<p class = "formMessages">Manage your Quizzard Account</p>
 				<fieldset> 
-					<input class = "usernameField" type = "text" placeholder = "Username" readonly>
+					<p class = "formMessages" style = "font-size: 12px;"> Note: The username must remain the same </p>
+					<input type = "text" placeholder = "Username" ng-model = "editUser.username">
 					<br><br>
-					<input type = "password" placeholder = "Password">
+					<input type = "password" placeholder = "Password" ng-model = "editUser.password">
 					<br><br>
-					<input type = "text" placeholder = "First Name">
+					<input type = "text" placeholder = "First Name" ng-model = "editUser.firstName">
 					<br><br>
-					<input type = "text" placeholder = "Last Name">
+					<input type = "text" placeholder = "Last Name" ng-model = "editUser.lastName">
 					<br><br>
-					<input type = "text" placeholder = "Email">
+					<input type = "text" placeholder = "Email" ng-model = "editUser.email">
 					<br><br>
-					<button type = "submit">Edit Account Information</button>
+					<p class = "formMessages" style = "font-size: 12px;"> {{message}}</p>
+					<button ng-click = "editAccount()" type = "submit">Edit Account Information</button>
 					<br><br>
 					<p class = "formMessages"> or </p>
-					<button type = "submit" class = "deleteButton">Delete Account</button>
+					<button ng-click = "deleteAccount()" type = "submit" class = "deleteButton">Delete Account</button>
 				</fieldset>
 			</form>
 	
 		</div>
 		
-
+	</div>
 		
 </body>
 </html>

@@ -124,17 +124,63 @@ th {
 		<script th:inline="javascript">
 			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
 			/*<![CDATA[*/
-			var app = angular.module("createAccountApp", []);
+			var app = angular.module("fillBlankApp", []);
 
-			app.controller('createAccountApp', function($scope, $http) {
-
+			app.controller('fillBlankCtrl', function($scope, $http) {
+				$scope.selectedSet = {};
 				
+				$scope.answers = [];
+				
+				$scope.score = 0;
+				
+				$scope.incorrect = [];
+				
+				$scope.loadStudySets = function() {
+					
+					$http.get("/api/v1/users/" + $scope.username + "/studysets").then(
+							function(response) {
+								$scope.studysets = response.data;
+							}, function(rejection) {
+								$scope.message = "Failed to load study sets";
+							});
+				}
+				
+				$scope.update = function() {
+						$http.get("/api/v1/users/" + $scope.username + "/studysets/" + $scope.selectedName.name).then(
+								function(response) {
+									$scope.selectedSet = response.data;
+								}, function(rejection) {
+									$scope.message = "Failed to load selected study set";
+								});
+				}
+				
+				$scope.checkAnswers = function() {
+					$scope.score = 0;
+					var size = $scope.answers.length;
+					for (var i = 0; i < size; i++) {
+						if (angular.equals($scope.answers[i], $scope.selectedSet.flashcards[i].term)) {
+							$scope.score++;
+						}
+						else {
+							$scope.incorrect[i] = "Incorrect";
+						}
+					}
+					
+					$scope.answersSubmitted = true;
+				}
+				
+				$scope.reset = function() {
+					$scope.incorrect = [];
+					$scope.answers = [];
+					$scope.answersSubmitted = false;
+					$scope.score = 0;
+				}
 				
 				
 			});
 			/*]]>*/
 		</script>
-
+	<div ng-app = "fillBlankApp" ng-controller = "fillBlankCtrl">
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -179,24 +225,25 @@ th {
 		
 		<p class = "text"> Fill in the Blank </p>
 		<br>
+		<div>
+			<label for = "usernameField"style = "font-size: 18px;">Enter your username: </label>
+			<input type = "text" name = "usernameField" placeholder = "Username" ng-model = "username" style = "width: 20%; overflow: visible; margin-bottom: 30px; margin-right: 20px;">
+			<button type = "submit" style = "background-color: #38e038; width: 15%;"ng-click = "loadStudySets()">Enter</button>
+		</div>
 		<p style = "padding: 10px; font-size: 24px; display: inline-block;"> Select a Study Set: </p>
-		<select style = "width: 20%; border-radius: 6px; height: 30px;"> 
-			<option> Spanish </option>
-			<option> Biology </option>
+		<select style = "width: 20%; border-radius: 6px; height: 30px;" ng-model = "selectedName" ng-options = "set as set.name for set in studysets" ng-change = "update()"> 
 		</select>
 		<div class = "container"> 
 			<table style = "text-align: center;">
 				<tr> 
 					<th> Definition </th>
 					<th> Term </th>
+					<th ng-show = "answersSubmitted == true">
 				</tr>
-				<tr> 
-					<td>The study of life</td>
-					<td> <input type = "text" placeholder = "Your answer..."></td>
-				</tr>
-				<tr> 
-					<td> The study of the human body </td>
-					<td> <input type = "text" placeholder = "Your answer..."></td>
+				<tr ng-repeat = "f in selectedSet.flashcards"> 
+					<td>{{f.definition}}</td>
+					<td> <input type = "text" ng-model = "answers[$index]" placeholder = "The term..."></td>
+					<td ng-show = "answersSubmitted == true" style = "color: red"> {{incorrect[$index]}}</td>
 				</tr>
 			
 			</table>
@@ -205,15 +252,14 @@ th {
 		</div>
 		
 		<div class = "container"> 
-			<button type = "submit" style = "background-color: #ffa333;">Reset</button><button type = "submit" style = "background-color: #38e038;">Check Answers</button>
+			<button type = "submit" ng-click = "reset()" style = "background-color: #ffa333;">Reset</button><button type = "submit" ng-click = "checkAnswers()" style = "background-color: #38e038;">Check Answers</button>
 			<br>
 			<br>
 		</div>
 		<hr>
-		<div class = "container" style = "padding: 30px;">
-			<p class = "text"> Your Score: 9/10</p>
-			<button type = "submit">Try Again</button>
+		<div class = "container" ng-show = "answersSubmitted == true" style = "padding: 30px;">
+			<p class = "text"> Your Score: {{score}}/{{selectedSet.flashcards.length}}</p>
 		</div>
-		
+	</div>	
 </body>
 </html>

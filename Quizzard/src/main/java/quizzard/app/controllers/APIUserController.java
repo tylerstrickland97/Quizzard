@@ -31,8 +31,6 @@ public class APIUserController extends APIController {
     @Autowired
     private UserService userService;
 
-    private User        currentUser;
-
     /**
      * Allows a user to "login" to Quizzard, making sure they are a valid user
      * in the system and also keeping up with who the current user is
@@ -47,14 +45,12 @@ public class APIUserController extends APIController {
     public ResponseEntity login ( @RequestBody User user ) {
         User foundUser = userService.findByUsername( user.getUsername() );
         if ( foundUser == null ) {
-            return new ResponseEntity( "Invalid username or password", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "Invalid username or password" ), HttpStatus.BAD_REQUEST );
         }
         else if ( !foundUser.getPassword().equals( user.getPassword() ) ) {
-            return new ResponseEntity( "Invalid username or password", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "Invalid username or password" ), HttpStatus.BAD_REQUEST );
         }
-
-        currentUser = user;
-        return new ResponseEntity( "Success", HttpStatus.OK );
+        return new ResponseEntity( toJson( "Success" ), HttpStatus.OK );
 
     }
 
@@ -70,21 +66,10 @@ public class APIUserController extends APIController {
     public ResponseEntity logout ( @RequestBody User user ) {
         User foundUser = userService.findByUsername( user.getUsername() );
 
-        if ( foundUser == null || !currentUser.getUsername().equals( user.getUsername() ) ) {
-            return new ResponseEntity( "Couldn't log out", HttpStatus.BAD_REQUEST );
+        if ( foundUser == null ) {
+            return new ResponseEntity( toJson( "Couldn't log out" ), HttpStatus.BAD_REQUEST );
         }
-        currentUser = null;
-        return new ResponseEntity( "Success", HttpStatus.OK );
-    }
-
-    /**
-     * Returns the user currently logged into Quizzard
-     *
-     * @return the user currently logged into Quizzard
-     */
-    @GetMapping ( BASE_PATH + "/current_user" )
-    public ResponseEntity getCurrentUser () {
-        return new ResponseEntity( currentUser, HttpStatus.OK );
+        return new ResponseEntity( toJson( "Success" ), HttpStatus.OK );
     }
 
     /**
@@ -108,7 +93,7 @@ public class APIUserController extends APIController {
     public ResponseEntity getUser ( @PathVariable final String username ) {
         User foundUser = userService.findByUsername( username );
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         else {
             return new ResponseEntity( foundUser, HttpStatus.OK );
@@ -128,16 +113,16 @@ public class APIUserController extends APIController {
     public ResponseEntity createUser ( @RequestBody User newUser ) {
         User foundUser = userService.findByUsername( newUser.getUsername() );
         if ( foundUser != null ) {
-            return new ResponseEntity( "The user already exists", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user already exists" ), HttpStatus.BAD_REQUEST );
         }
         try {
             User user = new User( newUser.getUsername(), newUser.getPassword(), newUser.getFirstName(),
                     newUser.getLastName(), newUser.getEmail(), newUser.getStudySets() );
             userService.save( user );
-            return new ResponseEntity( "Successfully created new User", HttpStatus.OK );
+            return new ResponseEntity( toJson( toJson( "Successfully created new User" ) ), HttpStatus.OK );
         }
         catch ( Exception e ) {
-            return new ResponseEntity( "There was an error creating the new User", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "There was an error creating the new User" ), HttpStatus.BAD_REQUEST );
         }
 
     }
@@ -157,16 +142,16 @@ public class APIUserController extends APIController {
     public ResponseEntity editUser ( @PathVariable final String username, @RequestBody final User newUser ) {
         User foundUser = userService.findByUsername( username );
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         try {
             foundUser.editUser( username, newUser.getPassword(), newUser.getFirstName(), newUser.getLastName(),
                     newUser.getEmail() );
             userService.save( foundUser );
-            return new ResponseEntity( "Successfully edited the User", HttpStatus.OK );
+            return new ResponseEntity( toJson( "Successfully edited the User" ), HttpStatus.OK );
         }
         catch ( Exception e ) {
-            return new ResponseEntity( "There was an error editing the User", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "There was an error editing the User" ), HttpStatus.BAD_REQUEST );
         }
     }
 
@@ -182,10 +167,10 @@ public class APIUserController extends APIController {
     public ResponseEntity deleteUser ( @PathVariable final String username ) {
         User foundUser = userService.findByUsername( username );
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         userService.delete( foundUser );
-        return new ResponseEntity( "The user was successfully deleted", HttpStatus.OK );
+        return new ResponseEntity( toJson( "The user was successfully deleted" ), HttpStatus.OK );
     }
 
     /**

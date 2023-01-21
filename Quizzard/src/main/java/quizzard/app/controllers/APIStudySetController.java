@@ -68,10 +68,11 @@ public class APIStudySetController extends APIController {
         StudySet foundStudySet = studySetService.findByName( name );
 
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         else if ( foundStudySet == null ) {
-            return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The study set with the given name does not exist" ),
+                    HttpStatus.BAD_REQUEST );
         }
 
         List<StudySet> foundUserStudySets = foundUser.getStudySets();
@@ -82,7 +83,8 @@ public class APIStudySetController extends APIController {
             }
         }
 
-        return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+        return new ResponseEntity( toJson( "The study set with the given name does not exist" ),
+                HttpStatus.BAD_REQUEST );
     }
 
     /**
@@ -102,20 +104,22 @@ public class APIStudySetController extends APIController {
         User foundUser = userService.findByUsername( username );
         StudySet foundStudySet = studySetService.findByName( newStudySet.getName() );
         if ( foundStudySet != null ) {
-            return new ResponseEntity( "The study set with the given name already exists", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The study set with the given name already exists" ),
+                    HttpStatus.BAD_REQUEST );
         }
         else if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         try {
             StudySet s = new StudySet( newStudySet.getName(), newStudySet.getFlashcards() );
             studySetService.save( s );
             foundUser.getStudySets().add( s );
             userService.save( foundUser );
-            return new ResponseEntity( "Successfully created the Study Set", HttpStatus.OK );
+            return new ResponseEntity( toJson( "Successfully created the Study Set" ), HttpStatus.OK );
         }
         catch ( Exception e ) {
-            return new ResponseEntity( "There was an error creating a new Study Set", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "There was an error creating a new Study Set" ),
+                    HttpStatus.BAD_REQUEST );
         }
     }
 
@@ -139,31 +143,25 @@ public class APIStudySetController extends APIController {
             @RequestBody final StudySet newStudySet ) {
         User foundUser = userService.findByUsername( username );
         StudySet foundStudySet = studySetService.findByName( name );
-
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         else if ( foundStudySet == null ) {
-            return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+            System.out.println( "%%%%% 149" );
+            return new ResponseEntity( toJson( "The study set with the given name does not exist" ),
+                    HttpStatus.BAD_REQUEST );
         }
 
-        List<StudySet> foundUserStudySets = foundUser.getStudySets();
-        for ( int i = 0; i < foundUserStudySets.size(); i++ ) {
-            StudySet s = foundUserStudySets.get( i );
-            if ( s.getName().equals( name ) ) {
-                try {
-                    s.setFlashcards( newStudySet.getFlashcards() );
-                    userService.save( foundUser );
-                    studySetService.save( foundStudySet );
-                    return new ResponseEntity( "Successfully updated the Study Set", HttpStatus.OK );
-                }
-                catch ( Exception e ) {
-                    return new ResponseEntity( "There was an error editing the Study Set", HttpStatus.BAD_REQUEST );
-                }
-            }
+        try {
+            foundStudySet.setFlashcards( newStudySet.getFlashcards() );
+            userService.save( foundUser );
+            studySetService.save( foundStudySet );
+            return new ResponseEntity( toJson( "Successfully updated the Study Set" ), HttpStatus.OK );
         }
-
-        return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+        catch ( Exception e ) {
+            System.out.println( "%%%%% " + e.getMessage() );
+            return new ResponseEntity( toJson( "There was an error editing the Study Set" ), HttpStatus.BAD_REQUEST );
+        }
     }
 
     /**
@@ -183,10 +181,11 @@ public class APIStudySetController extends APIController {
         StudySet foundStudySet = studySetService.findByName( name );
 
         if ( foundUser == null ) {
-            return new ResponseEntity( "The user does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The user does not exist" ), HttpStatus.BAD_REQUEST );
         }
         else if ( foundStudySet == null ) {
-            return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+            return new ResponseEntity( toJson( "The study set with the given name does not exist" ),
+                    HttpStatus.BAD_REQUEST );
         }
 
         List<StudySet> foundUserStudySets = foundUser.getStudySets();
@@ -196,11 +195,12 @@ public class APIStudySetController extends APIController {
                 foundUser.getStudySets().remove( i );
                 studySetService.delete( s );
                 userService.save( foundUser );
-                return new ResponseEntity( "Successfully deleted the study set", HttpStatus.OK );
+                return new ResponseEntity( toJson( "Successfully deleted the study set" ), HttpStatus.OK );
             }
         }
 
-        return new ResponseEntity( "The study set with the given name does not exist", HttpStatus.BAD_REQUEST );
+        return new ResponseEntity( toJson( "The study set with the given name does not exist" ),
+                HttpStatus.BAD_REQUEST );
     }
 
 }

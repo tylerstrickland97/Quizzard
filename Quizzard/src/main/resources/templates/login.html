@@ -94,9 +94,21 @@ button {
 
 			app.controller('loginCtrl', function($scope, $http) {
 
+				$scope.message = "";
 				
 				$scope.login = function() {
-					window.location.href = ("home.html");
+					$http.get("/api/v1/users/" + $scope.attemptedUsername).then(
+				            function (response) {
+				              $scope.user = response.data;
+				              if (angular.equals($scope.user.password, $scope.attemptedPassword)) {
+				            	  window.location.href = "home.html"
+				              }
+				              else {
+				            	  $scope.message = "Invalid username or password"
+				              }
+				            }, function (rejection) {
+				              $scope.message = "Invalid username or password"
+				            });
 				}
 				
 			});
@@ -112,11 +124,12 @@ button {
 				<form class = "form" ng-submit = "login()"> 
 					<p class = "formMessages"> Login to Quizzard </p> <br>
 					<fieldset>
-						<input type = "text" id = "usernameField" placeholder = "Username">
+						<input ng-model = "attemptedUsername" type = "text" id = "usernameField" placeholder = "Username">
 						<br><br><br>
-						<input type = "password" id = "passwordField" placeholder = "Password">
+						<input ng-model = "attemptedPassword" type = "password" id = "passwordField" placeholder = "Password">
 					</fieldset>
 					<br><br><br>
+					<p class = "formMessages" style = "color: #d90000;"> {{message}} </p>
 					<button type = "submit" class = "loginButton">Login</button>
 					<p class = "formMessages"> Don't have an account? <a href = "createaccount.html">Create account</a> </p>
 				</form>

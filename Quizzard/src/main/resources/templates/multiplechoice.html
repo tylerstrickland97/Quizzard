@@ -103,18 +103,6 @@ button {
 }
 
 
-td {
-	padding: 40px;
-	margin-right: 30px;
-}
-
-th {
-	padding: 20px;
-	background-color: #80dfff;
-	font-size: 24px;
-	text-align: center;
-}
-
 .answersContainer {
 	display: flex;
 	justify-content: center;
@@ -134,17 +122,95 @@ th {
 		<script th:inline="javascript">
 			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
 			/*<![CDATA[*/
-			var app = angular.module("createAccountApp", []);
+			var app = angular.module("multipleChoiceApp", []);
 
-			app.controller('createAccountApp', function($scope, $http) {
+			app.controller('multipleChoiceCtrl', function($scope, $http) {
 
+				$scope.index = 0;
 				
+				$scope.score = 0;
+				
+				$scope.choiceIdx = -1;
+				
+				$scope.loadStudySets = function() {
+					$http.get("/api/v1/users/" + $scope.username + "/studysets").then(
+							function(response) {
+								$scope.studysets = response.data;
+							}, function(rejection) {
+								$scope.message = "Failed to load study sets";
+							});
+				}
+				
+				$scope.getAnswerChoices = function() {
+					$scope.answerChoices = [];
+					var correctAnswerIdx = Math.floor(Math.random() * 3);
+					var alreadyUsedIdx = new Set();
+					for (var i = 0; i < 4; i++) {
+						if (i == correctAnswerIdx) {
+							$scope.answerChoices.push($scope.currentStudySet.flashcards[$scope.index].definition);
+						}
+						else {
+							var rand = Math.floor(Math.random() * $scope.currentStudySet.flashcards.length);
+							while (alreadyUsedIdx.has(rand) && alreadyUsedIdx.size < $scope.currentStudySet.flashcards.length) {
+								rand = Math.floor(Math.random() * $scope.currentStudySet.flashcards.length);
+							}
+							
+							$scope.answerChoices.push($scope.currentStudySet.flashcards[rand].definition);
+							alreadyUsedIdx.add(rand);
+						}
+					}
+				}
+				
+				$scope.chooseStudySet = function() {
+					$http.get("/api/v1/users/" + $scope.username + "/studysets/" + $scope.selectedSet.name).then(
+							function(response) {
+								$scope.currentStudySet = response.data;
+								$scope.selected = true;
+								$scope.index = 0;
+								$scope.getAnswerChoices();
+							}, function(rejection) {
+								$scope.message = "Failed to load your study set";
+							});
+				}
+				
+				$scope.updateChoice = function(idx) {
+					$scope.choiceIdx = idx;
+				}
+				
+				$scope.submitAnswer = function() {
+					if (angular.equals($scope.answerChoices[$scope.choiceIdx], $scope.currentStudySet.flashcards[$scope.index].definition)) {
+						$scope.score++;
+						$scope.message = "Correct";
+					}
+					else {
+						$scope.message = "Incorrect";
+					}
+					
+					$scope.submittedAnswer = true;
+				}
+				
+				$scope.next = function() {
+					$scope.index++;
+					if ($scope.index == $scope.currentStudySet.flashcards.length) {
+						$scope.completed = true;
+					}
+					$scope.submittedAnswer = false;
+					$scope.getAnswerChoices();
+				}
+				
+				$scope.reset = function() {
+					$scope.index = 0;
+					$scope.score = 0;
+					$scope.completed = false;
+					$scope.submittedAnswer = false;
+					$scope.getAnswerChoices();
+				}
 				
 				
 			});
 			/*]]>*/
 		</script>
-
+	<div ng-app = "multipleChoiceApp" ng-controller = "multipleChoiceCtrl">
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -188,31 +254,38 @@ th {
 		</nav>
 		
 		<p class = "text"> Multiple Choice </p>
+		<div>
+			<label for = "usernameField"style = "font-size: 18px;">Enter your username: </label>
+			<input type = "text" name = "usernameField" placeholder = "Username" ng-model = "username" style = "width: 20%; overflow: visible; margin-bottom: 30px; margin-right: 20px;">
+			<button type = "submit" style = "background-color: #38e038; width: 15%;"ng-click = "loadStudySets()">Enter</button>
+		</div>
 		<br>
 		<p style = "padding: 10px; font-size: 24px; display: inline-block;"> Select a Study Set: </p>
-		<select style = "width: 20%; border-radius: 6px; height: 30px;"> 
-			<option> Spanish </option>
-			<option> Biology </option>
+		<select ng-options = "s as s.name for s in studysets" ng-model = "selectedSet" ng-change = "chooseStudySet() "style = "width: 20%; border-radius: 6px; height: 30px;"> 
 		</select>
 		<div class = "container"> 
-			<p class = "text"> Biology </p>
+			<p class = "text"> {{currentStudySet.flashcards[index].term}} </p>
 		</div>
-		<div style = "display: flex; justify-content: center; align-items: center">
+		<div ng-show = "selected == true" style = "display: flex; justify-content: center; align-items: center">
 		<div class = "answersContainer">
 			<label for = "answer1"> </label>
-			<input type = "radio" id = "answer1" name = "answer"> The study of life
+			<input type = "radio" id = "answer1" name = "answer" ng-click = "updateChoice(0)"> {{answerChoices[0]}}
 			<label for = "answer2"></label>
-			<input type = "radio" id = "answer2" name = "answer"> Wrong Answer
+			<input type = "radio" id = "answer2" name = "answer" ng-click = "updateChoice(1)"> {{answerChoices[1]}}
 			<label for = "answer3"></label>
-			<input type = "radio" id = "answer3" name = "answer"> Wrong Answer
+			<input type = "radio" id = "answer3" name = "answer" ng-click = "updateChoice(2)"> {{answerChoices[2]}}
 			<label for = "answer4"></label>
-			<input type = "radio" id = "answer4" name = "answer">Wrong Answer 
+			<input type = "radio" id = "answer4" name = "answer" ng-click = "updateChoice(3)">{{answerChoices[3]}} 
 			
 		</div>
-		<button type = "submit">Check</button>
+		<button type = "submit" ng-click = "submitAnswer()">Check</button>
 		</div>
 		<br><br><br>
-		<p class = "text"> Your Score: </p>
-		
+		<button type = "submit" style = "float: right; display: block; background-color: #80dfff" ng-click = "next()" ng-show = "submittedAnswer == true">Next</button>
+		<br><br>
+		<p class = "text" ng-show = "submittedAnswer == true"> {{message}}</p>
+		<p class = "text"ng-show = "completed == true"> Your Score: {{score}}/{{currentStudySet.flashcards.length}}</p>
+		<button style = "float: right; background-color: #ffa333" type = "submit" ng-click = "reset()" ng-show = "completed == true">Reset</button>
+	</div>	
 </body>
 </html>

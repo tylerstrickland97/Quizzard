@@ -420,10 +420,6 @@ public class APIUserControllerTest {
                 post( "/api/v1/login" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user2 ) ) )
                 .andExpect( status().isBadRequest() );
 
-        // Make sure we can retrieve the current user
-        mvc.perform( get( "/api/v1/current_user" ).contentType( MediaType.APPLICATION_JSON ) )
-                .andExpect( status().isOk() );
-
         // Make sure we can logout as user1
         mvc.perform(
                 post( "/api/v1/logout" ).contentType( MediaType.APPLICATION_JSON ).content( asJsonString( user1 ) ) )

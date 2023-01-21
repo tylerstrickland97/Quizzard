@@ -150,17 +150,55 @@ tr {
 		<script th:inline="javascript">
 			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
 			/*<![CDATA[*/
-			var app = angular.module("createAccountApp", []);
+			var app = angular.module("createStudySetApp", []);
 
-			app.controller('createAccountApp', function($scope, $http) {
-
+			app.controller('createStudySetCtrl', function($scope, $http) {
+				$scope.newStudySet = {
+					name: "",
+					flashcards: []
+				};
 				
+				$scope.flashcards = [];
+				$scope.username = "";
+				
+				$scope.message = "";
+				
+				$scope.addFlashcard = function(newFlashcard) {
+					$scope.newStudySet.flashcards.push(newFlashcard);
+					
+					$scope.newFlashcard = {};
+				}
+				
+				$scope.resetMessage = function() {
+					$scope.message = "";
+				}
+				
+				$scope.createStudySet = function() { 
+				    return $http({ 
+				      url: "/api/v1/users/" + $scope.username + "/studysets", 
+				      method: "POST", 
+				      data: $scope.newStudySet 
+				    }).then(function (r) { 
+				      $scope.message = r.data; 
+				      $scope.newStudySet = {
+					    		name: "",
+					    		flashcards: []
+					    };
+				    }).catch(function (error) { 
+				      $scope.message = error.data; 
+				      $scope.newStudySet = {
+					    		name: "",
+					    		flashcards: []
+					    };
+				    }); 
+				    
+				  }; 
 				
 				
 			});
 			/*]]>*/
 		</script>
-
+	<div ng-app = "createStudySetApp" ng-controller = "createStudySetCtrl">
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -178,8 +216,8 @@ tr {
 				<div class = "menu">
 					Study Sets
 					<div class = "menu-list">
-						<a class="menu-links" href="fillblank.html">Fill in the Blank</a>
-						<a class="menu-links" href="multiplechoice.html">Multiple Choice</a>
+						<a class="menu-links" href="createstudyset.html">Create Study Set</a>
+						<a class="menu-links" href="managestudyset.html">Manage Study Sets</a>
 					</div>
 				</div>
 				
@@ -204,10 +242,14 @@ tr {
 		</nav>
 		
 		<p class = "text">Create a New Study Set</p>
+		<div>
+			<label for = "usernameField"style = "font-size: 18px;">Enter your username: </label>
+			<input type = "text" name = "usernameField" placeholder = "Username" ng-model = "username" style = "width: 20%; overflow: visible; margin-bottom: 20px; margin-right: 20px;">
+		</div>
 		<div class = "formContainer">
 			<form>
 				<fieldset>
-					<input type = "text" placeholder = "Study Set Name">
+					<input type = "text" placeholder = "Study Set Name" ng-model = "newStudySet.name" ng-change = "resetMessage()">
 					<br>
 				</fieldset>
 			</form>
@@ -215,9 +257,9 @@ tr {
 		<div class = "formContainer"> 	
 			<form> 
 				<p class = "text">Add a Flashcard</p>
-				<input type = "text" class = "flashcardFields" placeholder = "Term"> <input type = "text" class = "flashcardFields" placeholder = "Definition">
+				<input type = "text" class = "flashcardFields" placeholder = "Term" ng-model = "newFlashcard.term"> <input type = "text" class = "flashcardFields" placeholder = "Definition" ng-model = "newFlashcard.definition">
 				<br>
-				<button type = "submit">Add </button>
+				<button type = "submit" ng-click = "addFlashcard(newFlashcard)">Add </button>
 			</form>
 		</div>
 		<hr>
@@ -228,13 +270,15 @@ tr {
 				<th style = "text-align: center"> Term</th>
 				<th style = "text-align: center"> Definition </th>
 			</tr>
-			<tr>
-				<td> Term 1 </td>
-				<td> Definition 2 </td>
+			<tr ng-repeat = "f in newStudySet.flashcards">
+				<td> {{f.term}} </td>
+				<td> {{f.definition}} </td>
 			</tr>
 		
 		</table>
 		</div>
-		<button type = "submit" style = "float: right; background-color: #38e038; margin-right: 100px; margin-bottom: 30; width: 15%">Create Study Set</button>
+		<p class = "text">{{message}} </p>
+		<button type = "submit" ng-click = "createStudySet()" style = "float: right; background-color: #38e038; margin-right: 100px; margin-bottom: 30; width: 15%">Create Study Set</button>
+	 </div>
 </body>
 </html>

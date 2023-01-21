@@ -19,8 +19,8 @@ public class Flashcard extends DomainObject {
     /**
      * The term or main word associated with this flash card
      */
-    @Id
     @NonNull
+    @Id
     private String term;
 
     /**

@@ -98,7 +98,7 @@ button {
 
 .text {
 	padding: 10px;
-	font-size: 30px;
+	font-size: 18px;
 	text-align: center;
 }
 
@@ -125,17 +125,91 @@ button {
 		<script th:inline="javascript">
 			/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
 			/*<![CDATA[*/
-			var app = angular.module("createAccountApp", []);
+			var app = angular.module("studyApp", []);
 
-			app.controller('createAccountApp', function($scope, $http) {
-
+			app.controller('studyCtrl', function($scope, $http) {
 				
+				var flipIdx = 0;
+				
+				$scope.selectedSet = {};
+				
+				$scope.index = 0;
+				
+				$scope.selected = false;
+				
+				$scope.loadStudySets = function() {
+					$http.get("/api/v1/users/" + $scope.username + "/studysets").then(
+							function(response) {
+								$scope.studysets = response.data;
+							}, function(rejection) {
+								$scope.message = "Failed to load study sets";
+							});
+				}
+				
+				$scope.update = function() {
+					$http.get("/api/v1/users/" + $scope.username + "/studysets/" + $scope.selectedName.name).then(
+							function(response) {
+								$scope.selectedSet = response.data;
+							}, function(rejection) {
+								$scope.message = "Failed to load selected study set";
+							});
+					$scope.index = 0;
+					$scope.selected = true;
+				}
+				
+				$scope.flip = function() {
+					var flashcard = document.getElementById("flashcard");
+					if (flipIdx == 0) {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].definition
+						flipIdx = 1;
+					}
+					else {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].term
+						flipIdx = 0;
+					}
+					
+				}
+				
+				$scope.previous = function() {
+					var flashcard = document.getElementById("flashcard");
+					if ($scope.index == 0) {
+						$scope.index = $scope.selectedSet.flashcards.length - 1;
+					}
+					else {
+						$scope.index--;
+					}
+					
+					if (flipIdx == 0) {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].term
+					}
+					else {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].definition
+					}
+				}
+				
+				$scope.next = function() {
+					var flashcard = document.getElementById("flashcard");
+					if ($scope.index == $scope.selectedSet.flashcards.length - 1) {
+						$scope.index = 0;
+					}
+					else {
+						$scope.index++;
+					}
+					
+					if (flipIdx == 0) {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].term
+					}
+					else {
+						flashcard.innerHTML = $scope.selectedSet.flashcards[$scope.index].definition
+					}
+				}
 				
 				
 			});
 			/*]]>*/
 		</script>
 
+	<div ng-app = "studyApp" ng-controller = "studyCtrl"> 
 		<nav> 
 			<a href = "home.html">Home</a>
 			<a href = "about.html">About</a>
@@ -178,24 +252,28 @@ button {
 			</div>
 		</nav>
 		
-		<p class = "text"> Study Mode </p>
+		<p class = "text" style = "font-size: 30px"> Study Mode </p>
+		<div>
+			<label for = "usernameField"style = "font-size: 18px;">Enter your username: </label>
+			<input type = "text" name = "usernameField" placeholder = "Username" ng-model = "username" style = "width: 20%; overflow: visible; margin-bottom: 30px; margin-right: 20px;">
+			<button type = "submit" style = "background-color: #38e038; width: 15%;"ng-click = "loadStudySets()">Enter</button>
+		</div>
 		<br>
 		<p style = "padding: 10px; font-size: 24px; display: inline-block;"> Select a Study Set: </p>
-		<select style = "width: 20%; border-radius: 6px; height: 30px;"> 
-			<option> Spanish </option>
-			<option> Biology </option>
+		<p style = "font-size: 14px;"> {{message}}</p>
+		<select ng-options="studyset as studyset.name for studyset in studysets" style = "width: 20%; border-radius: 6px; height: 30px;" ng-model = "selectedName" ng-change = "update()"> 
 		</select>
 		<div style = "display: flex; justify-content: center; align-items: center; margin-top: 50px; margin-bottom: 50px;">
-			<button type = "submit">Previous</button>
-			<button type = "submit">Next</button>
+			<button type = "submit" ng-click = "previous()">Previous</button>
+			<button type = "submit" ng-click = "next()">Next</button>
 		</div>
-		<div class = "container"> 
-			<p class = "text"> Biology </p>
+		<div id = "flashcard" class = "container" ng-click = "flip()"> 
+			<p class = "text"> {{selectedSet.flashcards[index].term}} </p>
 		</div>
 		<div style = "display: flex; justify-content: center; align-items: center">
-			<p class = "text" style = "margin-bottom: 20px;"> 1/40 </p>
+			<p ng-show = "selected == true" class = "text" style = "margin-bottom: 20px;"> {{index + 1}}/{{selectedSet.flashcards.length}} </p>
 		</div>
-		
+	</div>
 		
 </body>
 </html>
