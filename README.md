@@ -7,4 +7,4 @@ Quizzard is a web application designed to allow users to study different topics 
 Quizzard is a Maven web application that was built using an object-oriented approach with the help of several frameworks and technologies. Quizzard's backend was built using Spring Boot to handle all needed dependencies. To handle storing information in a database, the MySQL relational database system was used to store User records and Study Sets while Hibernate was used to handle the persistence of these records into the database. To allow users to interact to the backend of the Quizzard application from the frontend, several REST APIs were implemented. Separate API endpoints were built to handle any GET, PUT, POST, or DELETE calls that would be made by the user. For the frontend, HTML5 and embedded CSS were used to build each webpage in the Quizzard application. AngularJS was used in each individual webpage to make API calls and to make each webpage interactive. 
 
 ## Demo
-For a demo, click here
+For a demo, [click here](https://github.com/tylerstrickland97/Quizzard/wiki/Quizzard-Demo)
